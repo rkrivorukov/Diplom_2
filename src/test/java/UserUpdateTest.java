@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
-public class UserDtoUpdateTest {
+public class UserUpdateTest {
     private static final String BASE_URL = "https://stellarburgers.nomoreparties.site";
 
     @BeforeClass

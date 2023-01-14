@@ -11,7 +11,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
-public class OrderDtoCreateTest {
+public class OrderCreateTest {
     private static final String BASE_URL = "https://stellarburgers.nomoreparties.site";
 
     @BeforeClass
@@ -27,14 +27,17 @@ public class OrderDtoCreateTest {
         String accessToken = response.jsonPath().getString("accessToken");
 
         OrderDto orderDto = new OrderDto(List.of("61c0c5a71d1f82001bdaaa6f", "61c0c5a71d1f82001bdaaa70"));
-        response = given().header("Content-type", "application/json")
+        response = given().headers("Content-type", "application/json", "Authorization", accessToken)
                 .body(orderDto)
                 .post(OrderService.CREATE_ORDER_PATH);
+        System.out.println(response.getBody().asString());
 
         response.then()
                 .assertThat().body("success", equalTo(true))
                 .assertThat().body("name", notNullValue())
-                        .assertThat().body("order.number", notNullValue());
+                .assertThat().body("order.owner.name", equalTo(userDto.getName()))
+                .assertThat().body("order.ingredients._id", equalTo(orderDto.getIngredients()))
+                .assertThat().body("order.number", notNullValue());
         response.then().statusCode(200);
         UserService.deleteUser(accessToken);
     }

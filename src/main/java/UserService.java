@@ -4,11 +4,12 @@ import model.UserDto;
 import static io.restassured.RestAssured.given;
 
 public class UserService {
-    private static final String CREATE_USER_PATH = "/api/auth/register";
-    private static final String DELETE_USER_PATH = "/api/auth/user";
-    private static final String LOGIN_USER_PATH = "/api/auth/login";
-    private static final String UPDATE_USER_PATH = "/api/auth/user";
-    private static final String USER_INFO_PATH = "/api/auth/user";
+    public static final String CREATE_USER_PATH = "/api/auth/register";
+    public static final String DELETE_USER_PATH = "/api/auth/user";
+    public static final String LOGIN_USER_PATH = "/api/auth/login";
+    public static final String UPDATE_USER_PATH = "/api/auth/user";
+    public static final String USER_INFO_PATH = "/api/auth/user";
+    public static final String USER_ORDERS_PATH = "/api/orders";
 
     public static Response deleteUser(String token) {
         return given().headers("Authorization", token)
@@ -34,7 +35,12 @@ public class UserService {
     }
 
     public static Response getInfo(String token) {
-        return given().headers("Authorization", token)
+        return given().header("Authorization", token)
                 .get(USER_INFO_PATH);
+    }
+
+    public static Response getOrders(String token) {
+        return given().header("Authorization", token)
+                .get(USER_ORDERS_PATH);
     }
 }

@@ -7,7 +7,7 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
-public class UserDtoLoginTest {
+public class UserLoginTest {
 
     private static final String BASE_URL = "https://stellarburgers.nomoreparties.site";
 
