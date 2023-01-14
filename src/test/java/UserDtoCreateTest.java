@@ -1,13 +1,13 @@
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import model.User;
+import model.UserDto;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
-public class UserCreateTest {
+public class UserDtoCreateTest {
 
     private static final String BASE_URL = "https://stellarburgers.nomoreparties.site";
 
@@ -18,12 +18,12 @@ public class UserCreateTest {
 
     @Test
     public void createUniqueUserTest() {
-        User user = new User("user11@email.com", "password", "user11");
-        Response response = UserService.createUser(user);
+        UserDto userDto = new UserDto("user11@email.com", "password", "user11");
+        Response response = UserService.createUser(userDto);
 
         response.then()
                 .assertThat().body("success", equalTo(true))
-                .assertThat().body("user.email", equalTo(user.getEmail()))
+                .assertThat().body("user.email", equalTo(userDto.getEmail()))
                 .assertThat().body("accessToken", notNullValue());
         response.then().statusCode(200);
 
@@ -33,11 +33,11 @@ public class UserCreateTest {
 
     @Test
     public void createUserAlreadyExistsTest() {
-        User user = new User("user11@email.com", "password", "user11");
-        Response response = UserService.createUser(user);
+        UserDto userDto = new UserDto("user11@email.com", "password", "user11");
+        Response response = UserService.createUser(userDto);
         String bearerToken = response.jsonPath().get("accessToken");
 
-        response = UserService.createUser(user);
+        response = UserService.createUser(userDto);
 
         response.then()
                 .assertThat().body("success", equalTo(false))
@@ -49,8 +49,8 @@ public class UserCreateTest {
 
     @Test
     public void createUserEmptyName() {
-        User user = new User("user11@email.com", "password", null);
-        Response response = UserService.createUser(user);
+        UserDto userDto = new UserDto("user11@email.com", "password", null);
+        Response response = UserService.createUser(userDto);
 
         response.then()
                 .assertThat().body("success", equalTo(false))

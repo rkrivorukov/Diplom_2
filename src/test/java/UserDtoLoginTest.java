@@ -1,13 +1,13 @@
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import model.User;
+import model.UserDto;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
-public class UserLoginTest {
+public class UserDtoLoginTest {
 
     private static final String BASE_URL = "https://stellarburgers.nomoreparties.site";
 
@@ -18,14 +18,14 @@ public class UserLoginTest {
 
     @Test
     public void loginExistingUserTest() {
-        User user = new User("user11@email.com", "password", "user11");
-        UserService.createUser(user);
+        UserDto userDto = new UserDto("user11@email.com", "password", "user11");
+        UserService.createUser(userDto);
 
-        Response response = UserService.loginUser(user);
+        Response response = UserService.loginUser(userDto);
 
         response.then()
                 .assertThat().body("success", equalTo(true))
-                .assertThat().body("user.email", equalTo(user.getEmail()))
+                .assertThat().body("user.email", equalTo(userDto.getEmail()))
                 .assertThat().body("accessToken", notNullValue());
         response.then().statusCode(200);
 
@@ -35,8 +35,8 @@ public class UserLoginTest {
 
     @Test
     public void loginWIthInvalidCredentialsTest() {
-        User user = new User("user12@email.com", "password", "user12");
-        Response response = UserService.loginUser(user);
+        UserDto userDto = new UserDto("user12@email.com", "password", "user12");
+        Response response = UserService.loginUser(userDto);
 
         response.then()
                 .assertThat().body("success", equalTo(false))

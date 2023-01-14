@@ -1,5 +1,5 @@
 import io.restassured.response.Response;
-import model.User;
+import model.UserDto;
 
 import static io.restassured.RestAssured.given;
 
@@ -15,21 +15,21 @@ public class UserService {
                 .delete(DELETE_USER_PATH);
     }
 
-    public static Response createUser(User user) {
+    public static Response createUser(UserDto userDto) {
         return given().header("Content-type", "application/json")
-                .body(user)
+                .body(userDto)
                 .post(CREATE_USER_PATH);
     }
 
-    public static Response loginUser(User user) {
+    public static Response loginUser(UserDto userDto) {
         return given().header("Content-type", "application/json")
-                .body(user)
+                .body(userDto)
                 .post(LOGIN_USER_PATH);
     }
 
-    public static Response updateUser(String token, User user) {
+    public static Response updateUser(String token, UserDto userDto) {
         return given().headers("Authorization", token, "Content-type", "application/json")
-                .body(user)
+                .body(userDto)
                 .patch(UPDATE_USER_PATH);
     }
 
