@@ -1,6 +1,7 @@
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import model.UserDto;
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -11,9 +12,16 @@ public class UserCreateTest {
 
     private static final String BASE_URL = "https://stellarburgers.nomoreparties.site";
 
+    private String accessToken = "";
+
     @BeforeClass
     public static void setUp() {
         RestAssured.baseURI = BASE_URL;
+    }
+
+    @After
+    public void tearDown() {
+        UserService.deleteUser(accessToken);
     }
 
     @Test
@@ -24,27 +32,24 @@ public class UserCreateTest {
         response.then()
                 .assertThat().body("success", equalTo(true))
                 .assertThat().body("user.email", equalTo(userDto.getEmail()))
-                .assertThat().body("accessToken", notNullValue());
-        response.then().statusCode(200);
+                .assertThat().body("accessToken", notNullValue())
+                .assertThat().statusCode(200);
 
-        String bearerToken = response.jsonPath().get("accessToken");
-        UserService.deleteUser(bearerToken);
+        accessToken = response.jsonPath().get("accessToken");
     }
 
     @Test
     public void createUserAlreadyExistsTest() {
         UserDto userDto = new UserDto("user11@email.com", "password", "user11");
         Response response = UserService.createUser(userDto);
-        String bearerToken = response.jsonPath().get("accessToken");
+        accessToken = response.jsonPath().get("accessToken");
 
         response = UserService.createUser(userDto);
 
         response.then()
                 .assertThat().body("success", equalTo(false))
                 .assertThat().body("message", equalTo("User already exists"))
-                .statusCode(403);
-
-        UserService.deleteUser(bearerToken);
+                .assertThat().statusCode(403);
     }
 
     @Test
@@ -55,7 +60,7 @@ public class UserCreateTest {
         response.then()
                 .assertThat().body("success", equalTo(false))
                 .assertThat().body("message", equalTo("Email, password and name are required fields"))
-                .statusCode(403);
+                .assertThat().statusCode(403);
     }
 
 }
